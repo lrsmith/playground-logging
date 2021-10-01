@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+
+  fluentd:
+    container_name: fluentd
+    depends_on: 
+      - splunk 
+    image: "${USER}/fluentd:v1.13"
+    ports:
+      - "24224:24224"
+      - "24231:24231"
+    volumes:
+      - "./config/fluentd:/fluentd/etc"
+
+  logs-apache:
+    container_name: logs-apache
+    depends_on: 
+      - fluentd
+    entrypoint: ["/scripts/apache-logs.sh"]
+    logging:
+      driver: "fluentd"
+      options:
+        tag: "service=docker.apache"
+    image: alpine:3.13.5
+    volumes:
+      - ./config/logger:/scripts
+
+  splunk:
+    container_name: splunk
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_PASSWORD=adminadmin
+    image: "splunk/splunk:8.2"
+    ports:
+      - "8000:8000"
+      - "8088:8088"
+    volumes:
+      - ./config/splunk:/opt/splunk/etc/apps/launcher/local  
+
+networks:
+  default:
+    name: logging
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.20.0.0/24
+         gateway: 172.20.0.1

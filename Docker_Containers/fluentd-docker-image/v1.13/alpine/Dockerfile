@@ -10,6 +10,7 @@ RUN apk add --no-cache --update --virtual .build-deps \
  && sudo gem install fluent-plugin-kafka \
  && sudo gem install fluent-plugin-rewrite-tag-filter\
  && sudo gem install fluent-plugin-prometheus \
+ && sudo gem install fluent-plugin-splunk-hec \
  && sudo gem sources --clear-all \
  && apk del .build-deps \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
