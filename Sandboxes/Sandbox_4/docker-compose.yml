@@ -4,8 +4,8 @@ services:
 
   logstash:
     container_name: logstash
-#    depends_on:
-#      - splunk
+    depends_on:
+      - splunk
     image: "docker.elastic.co/logstash/logstash-oss:7.15.0"
     volumes:
       - ./config/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf  
@@ -21,7 +21,8 @@ services:
       - "8000:8000"
       - "8088:8088"
     volumes:
-      - ./config/splunk:/opt/splunk/etc/apps/launcher/local  
+      - ./config/splunk/apps:/opt/splunk/etc/apps/launcher/local  
+      - ./config/splunk/ansible/defaults.yml:/tmp/defaults/default.yml  
 
 networks:
   default:
@@ -29,5 +30,5 @@ networks:
     driver: bridge
     ipam:
      config:
-       - subnet: 172.20.0.0/24
-         gateway: 172.20.0.1
+       - subnet: 172.21.0.0/24
+         gateway: 172.21.0.1
