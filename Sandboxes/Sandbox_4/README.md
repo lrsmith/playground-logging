@@ -54,7 +54,8 @@ gets parsed into the below and shows up in Splunk with those fields.
                    "userAgent" => "-",
                   "ssl_cipher" => "ECDHE-RSA-AES128-GCM-SHA256",
                 "redirect_url" => "-\" \"-\" 10.0.0.171:8010 101 \"-"
-}```
+}
+```
 
 
 # Troubleshooting
