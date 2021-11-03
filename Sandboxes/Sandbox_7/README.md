@@ -5,61 +5,63 @@ This Sandbox runs two docker containers: Logstash and Splunk. The purpose is to 
 and provide a place to test receiving AWS ALB logs, parsing them into JSON and then
 forwarding them to Splunk, via HEC. 
 
-The RequestDomain of the log is also parsed and used to set the index which the logs are sent to.
+Logstash 
+* Parses the RequestDomain and uses that the determine which index to send the logs to.
+* Passwords in the request field are replaced with '*'.
+* Sourcetype is hard-coded to aws:alb:accesslogs.
+* Health checks that return a 200 get dropped
 
 A new script `logs/generate-https-log.sh` is used to generate HTTPS ALB logs setting the date to the 
-current time, and randomly setting the domain in various fields. 
-
+current time, and randomly setting the domain in various fields.
 
 # Usage
 
 1. `docker compose up -d`
-2. Log onto the logstash docker container. `docker exec -it logstash bash`
-3. Generate logs on the logstash container. `/logs/generate-https-log.sh`
-4. Log into Splunk UI on the host browser. `https://localhost:8000` 
+2. Log into Splunk UI on the host browser. `https://localhost:8000` 
 * username = admin, password=adminadmin
-5. Search `index=* | stats count by index` for `alltime` and you should see the total logs sent to each index.
+3. Generate logs `cd logs && ./generate-https-logs.sh`
+4. Search in Splunk 
 
 # Example
 
-```logstash  | {
-logstash  |           "host" => "3aa91bd2ea46",
-logstash  |          "event" => {
-logstash  |                         "trace_id" => "Root=1-58337281-1d84f3d73c47ec4e58577259",
-logstash  |                        "timestamp" => "2021-11-03T01:49:44Z",
-logstash  |            "matched_rule_priority" => 1,
-logstash  |                       "ssl_cipher" => "ECDHE-RSA-AES128-GCM-SHA256",
-logstash  |                       "backend_ip" => "10.0.0.10",
-logstash  |                   "received_bytes" => 0,
-logstash  |                        "userAgent" => "curl/7.46.0",
-logstash  |                             "verb" => "GET",
-logstash  |                             "type" => "https",
-logstash  |                  "chosen_cert_arn" => "arn:aws:acm:us-east-2:123456789012:certificate/12345678-1234-1234-1234-123456789012",
-logstash  |                  "action_executed" => "authenticate,forward",
-logstash  |                      "client_port" => 2817,
-logstash  |                  "elb_status_code" => 200,
-logstash  |                     "backend_port" => 80,
-logstash  |                          "request" => "https://marvin.com:443/",
-logstash  |                     "redirect_url" => "-\" \"-\" 10.0.0.1:80 200 \"-",
-logstash  |         "response_processing_time" => 0.037,
-logstash  |                 "target_group_arn" => "arn:aws:elasticloadbalancing:us-east-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
-logstash  |                        "client_ip" => "192.168.131.1",
-logstash  |              "backend_status_code" => 200,
-logstash  |                       "sent_bytes" => 57,
-logstash  |                      "httpversion" => "1.1",
-logstash  |                     "loadbalancer" => "app/my-loadbalancer/50dc6c495c0c9188",
-logstash  |                     "ssl_protocol" => "TLSv1.2",
-logstash  |                    "RequestDomain" => "trillian.com",
-logstash  |            "request_creation_time" => "2021-11-03T01:49:44Z",
-logstash  |          "request_processing_time" => 0.086,
-logstash  |                     "error_reason" => "-",
-logstash  |          "backend_processing_time" => 0.048
-logstash  |     },
-logstash  |          "index" => "trillian",
-logstash  |     "sourcetype" => "_json",
-logstash  |         "source" => "app/my-loadbalancer/50dc6c495c0c9188"
-logstash  | }
-```
+```{
+         "event" => {
+                 "elb_status_code" => 200,
+                            "type" => "https",
+                      "ssl_cipher" => "ECDHE-RSA-AES128-GCM-SHA256",
+         "request_processing_time" => 0.086,
+                     "client_port" => 2817,
+                         "request" => "https://marvin.com:443/login?password=*********",
+                "target_group_arn" => "arn:aws:elasticloadbalancing:us-east-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+                     "httpversion" => "1.1",
+                    "ssl_protocol" => "TLSv1.2",
+        "response_processing_time" => 0.037,
+                 "chosen_cert_arn" => "arn:aws:acm:us-east-2:123456789012:certificate/12345678-1234-1234-1234-123456789012",
+                       "timestamp" => "2021-11-03T05:08:14Z",
+           "matched_rule_priority" => 1,
+                   "RequestDomain" => "slartibartfast.com",
+           "request_creation_time" => "2021-11-03T05:08:14Z",
+                    "loadbalancer" => "app/my-loadbalancer/50dc6c495c0c9188",
+                      "sent_bytes" => 57,
+                 "action_executed" => "authenticate,forward",
+                  "received_bytes" => 0,
+             "backend_status_code" => 200,
+                    "error_reason" => "-",
+                    "redirect_url" => "-\" \"-\" 10.0.0.1:80 200 \"-",
+         "backend_processing_time" => 0.048,
+                            "verb" => "GET",
+                    "backend_port" => 80,
+                        "trace_id" => "Root=1-58337281-1d84f3d73c47ec4e58577259",
+                       "client_ip" => "192.168.131.4",
+                      "backend_ip" => "10.0.0.6",
+                       "userAgent" => "curl/7.46.0"
+    },
+          "host" => "app/my-loadbalancer/50dc6c495c0c9188",
+    "sourcetype" => "aws::alb::accesslogs",
+         "index" => "slartibartfast",
+        "source" => "4d6a4eec77f3"
+}```
+
 
 # Troubleshooting
 
