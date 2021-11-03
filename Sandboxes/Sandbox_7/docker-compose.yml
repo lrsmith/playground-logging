@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+
+
+  logstash:
+    container_name: logstash
+#    depends_on:
+#      - splunk
+    image: "docker.elastic.co/logstash/logstash-oss:7.15.0"
+    volumes:
+      - ./config/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf  
+      - ./logs:/logs
+
+#  splunk:
+#    container_name: splunk
+#    environment:
+#      - SPLUNK_START_ARGS=--accept-license
+#      - SPLUNK_PASSWORD=adminadmin
+#    image: "splunk/splunk:8.2"
+#    ports:
+#      - "8000:8000"
+#      - "8088:8088"
+#    volumes:
+#      - ./config/splunk/apps:/opt/splunk/etc/apps/launcher/local  
+#      - ./config/splunk/ansible/defaults.yml:/tmp/defaults/default.yml  
+
+networks:
+  default:
+    name: logging
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.21.0.0/24
+         gateway: 172.21.0.1
