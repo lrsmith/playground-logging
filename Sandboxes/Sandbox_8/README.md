@@ -8,6 +8,8 @@ but is passed as an event and the sourcetype is set, to let Splunk do the field 
 For this sandbox the index is hard-coded, but it could be parsed from the logs and set
 dynamically.
 
+This sandbox example also replaces passwords.
+
 A script `logs/generate-https-log.sh` is used to generate Apache access_combined logs setting 
 the date to the current time, and randomly setting the last two octets of the client IP.
 
@@ -21,12 +23,12 @@ the date to the current time, and randomly setting the last two octets of the cl
 
 # Example
 
-```{
-         "event" => "10.1.6.7 - webdev [03/Nov/2021:01:36:53 -0700] \"GET / HTTP/1.0\" 200 0442 \"-\" \"check_http/1.10 (nagios-plugins 1.4)\"",
-    "sourcetype" => "access_combined",
-         "index" => "ford",
-          "host" => "3d27bd9c2ed1"
-}```
+```logstash  | {
+logstash  |           "host" => "1eff6a16d82f",
+logstash  |          "event" => "10.1.7.2 - webdev [03/Nov/2021:07:58:45 -0700] \"GET /login?password=********* HTTP/1.0\" 200 0442 \"-\" \"check_http/1.10 (nagios-plugins 1.4)\"",
+logstash  |     "sourcetype" => "access_combined",
+logstash  |          "index" => "ford"
+logstash  | }```
 
 # Troubleshooting
 
