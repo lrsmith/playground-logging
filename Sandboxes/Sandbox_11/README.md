@@ -50,6 +50,9 @@ This will show the number of logs per index, indicating that logstash and Splunk
 
 # Example
 
+![Splunk HEC Metrics](images/splunk_hec_metrics.png)
+
+
 
 # Troubleshooting
 
@@ -95,8 +98,3 @@ will trust the cert. This is currently a WIP.
 * AWS ALB Logs - Documentation and example logs. https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
 
 # To Do
-
-1. Finish documenting and automating how to use SSL for HEC
-2. Writ script to continually generate ALB logs for ingestion.
-3. Need to remove a few default fields from the JSON
-4. Investigate being able to adjust the source and host, as it shows up in Splunk
