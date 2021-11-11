@@ -51,6 +51,7 @@ This will show the number of logs per index, indicating that logstash and Splunk
 # Example
 
 ![Splunk HEC Metrics](images/splunk_hec_metrics.png)
+![ALB log in Splunk](images/splunk_example_log.png)
 
 
 
