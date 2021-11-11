@@ -38,7 +38,7 @@ At launch time the splunk container:
 1. `docker compose up -d`
 2. Log into Splunk UI on the host browser. `https://localhost:8000` 
 * username = admin, password=adminadmin
-3. Generate logs `cd logs && ./generate-https-logs.sh`
+3. Generate logs `cd logs && ./generate-https-logs.sh 2000`
 4. Search in Splunk 
 
 ## Useful Splunk searches
