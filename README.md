@@ -54,3 +54,16 @@ One is parsed to goto Splunk. The log line is sent as an event. The index is dyn
 
 The second copy of the log is left as is and sent to sent to stdout. It could instead send it to a remote loghost, Elasticsearch, Kafka or some other sink.
 
+## Sandbox_10 :
+* Logstash, Splunk
+
+This uses the HTTP output plugin and sets the format to json_batch to batchs the events and send them. The
+events are sent unparsed and rely on Splunk to parse the fields.
+
+## Sandbox_11 :
+* Logstash, Splunk
+
+This uses the Splunk output plugin and sets is_batch to batchs the events and send them. The
+events are sent unparsed and rely on Splunk to parse the fields. This does not use the raw endpoint, but the
+json.
+

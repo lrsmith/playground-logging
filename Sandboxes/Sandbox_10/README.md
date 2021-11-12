@@ -5,14 +5,11 @@ This sandbox generate random ALB logs and passes them through logstash.
 
 ## Logstash
 
-At launch time logstash:
-* Installs the logstash-output-splunk plugin
-  * This allows log messages to be batched, when sent to Splunk
-
 ### Logstach Config
 * Masks any password included in the URI
 * Drops ALB Healthchecks that returns a HTTP code of 200
 * Clones the log for two different parsing paths
+* Uses HTTP output and batches using json_batch
 
 #### Splunk Filter Path
 * Logstash adds a metadata field to identify this log is for splunk.
@@ -38,7 +35,7 @@ At launch time the splunk container:
 1. `docker compose up -d`
 2. Log into Splunk UI on the host browser. `https://localhost:8000` 
 * username = admin, password=adminadmin
-3. Generate logs `cd logs && ./generate-https-logs.sh`
+3. Generate logs `cd logs && ./generate-https-logs.sh <n>` where n is number of logs to send
 4. Search in Splunk 
 
 # Example
